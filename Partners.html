@@ -1,0 +1,638 @@
+<!doctype html>
+<html lang="en" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LIFO Technologies Pvt. Ltd.</title>
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      box-sizing: border-box;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      overflow-x: hidden;
+    }
+    /* Navigation Styles */
+    .nav-link {
+      position: relative;
+      transition: color 0.3s ease;
+    }
+    
+    .nav-link:hover {
+      color: #D4AF37;
+    }
+    
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background:  #c5a438 0%, #F4D03F 50%, #D4AF37;
+      transition: width 0.3s ease;
+    }
+    
+    .nav-link:hover::after {
+      width: 100%;
+    }
+    
+    .dropdown {
+      position: relative;
+    }
+    
+    .dropdown-menu {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      min-width: 280px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-10px);
+      transition: all 0.3s ease;
+      z-index: 1000;
+      margin-top: 12px;
+    }
+    
+    .dropdown.active .dropdown-menu {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+      animation: slideDown 0.3s ease;
+    }
+    
+    .dropdown-item {
+      display: block;
+      padding: 12px 20px;
+      color: #1F2937;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      border-left: 3px solid transparent;
+    }
+    
+    .dropdown-item:hover {
+      background: #F9FAFB;
+      border-left-color: #9d8536;
+      color: #D4AF37;
+    }
+    
+    .dropdown-item:first-child {
+      border-top-left-radius: 8px;
+      border-top-right-radius: 8px;
+    }
+    
+    .dropdown-item:last-child {
+      border-bottom-left-radius: 8px;
+      border-bottom-right-radius: 8px;
+    }
+    
+    .mobile-menu {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+    
+    .mobile-menu.active {
+      max-height: 800px;
+    }
+    
+    .mobile-dropdown-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+    
+    .mobile-dropdown-content.active {
+      max-height: 500px;
+    }
+    .whatsapp-float {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 60px;
+      height: 60px;
+      background-color: #25D366;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      cursor: pointer;
+      transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+      z-index: 1000;
+      text-decoration: none;
+    }
+    
+    .whatsapp-float:hover {
+      background-color: #20BA5A;
+      box-shadow: 0 6px 20px rgba(37, 211, 102, 0.5);
+      transform: scale(1.1);
+    }
+    
+    .whatsapp-float:active {
+      transform: scale(1.05);
+    }
+    
+    .whatsapp-float svg {
+      width: 32px;
+      height: 32px;
+      fill: white;
+    }
+    
+
+    .gradient-bg {
+      background: linear-gradient(135deg, #0a1628 0%, #1e3a5f 50%, #0a1628 100%);
+      position: relative;
+    }
+
+    .gold-accent {
+      color: #d4af37;
+    }
+    
+
+    .hover-lift {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .hover-lift:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 24px rgba(212, 175, 55, 0.3);
+    }
+
+    .fade-in {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .tech-card {
+      background: rgba(30, 58, 95, 0.5);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(212, 175, 55, 0.2);
+      border-radius: 16px;
+      padding: 2rem;
+      transition: all 0.4s ease;
+    }
+
+    .tech-card:hover {
+      border-color: rgba(212, 175, 55, 0.6);
+      background: rgba(30, 58, 95, 0.7);
+    }
+
+    .pulse-dot {
+      animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 0.5;
+      }
+    }
+
+    .rotate-slow {
+      animation: rotate 20s linear infinite;
+    }
+
+    @keyframes rotate {
+      from {
+        transform: rotate(0deg);
+      }
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .float-animation {
+      animation: float 6s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% {
+        transform: translateY(0px);
+      }
+      50% {
+        transform: translateY(-20px);
+      }
+    }
+
+    .glow-text {
+      text-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+    }
+
+    .section-padding {
+      padding: 4rem 1.5rem;
+    }
+
+    @media (min-width: 768px) {
+      .section-padding {
+        padding: 6rem 2rem;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .section-padding {
+        padding: 8rem 3rem;
+      }
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full">
+  <div class="app-wrapper w-full h-full overflow-auto" style="background: linear-gradient(135deg, #0A1628 0%, #1a2942 50%, #0A1628 100%);"><!-- Navigation Header -->
+   <nav class="fixed top-0 left-0 right-0 z-50 bg-white shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+     <div class="flex items-center justify-between h-20"><!-- Logo -->
+      <div class="flex items-center space-x-3">
+        <img src="Images/logo1.png" height="9%" width="9%" style="padding: 0%; margin: left -4px;" alt=""><span class="text-xl font-bold" style="color: #0A1628;">Al Salah Global</span>
+      </div><!-- Desktop Navigation -->
+      <div class="hidden lg:flex items-center space-x-5"> <a href="index.html" class="nav-link text-gray-700 font-medium">About Us</a>  <!-- Products Dropdown -->
+       <div class="dropdown relative"><button onclick="toggleDropdown('products')" class="nav-link text-gray-700 font-medium flex items-center space-x-1"> <span>Products</span>
+         <svg width="16" height="16" viewbox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+         </svg></button>
+        <div class="dropdown-menu"><a href="Product1.html" class="dropdown-item">LPG Vending Machines &amp; Cylinder Tracking Systems</a> <a href="Product2.html" class="dropdown-item">LPG Cylinder Tracking System</a> <a href="Product3.html"" class="dropdown-item">Industrial Gas Cylinder Tracking &amp; Asset Management</a>
+        </div>
+       </div><!-- Services Dropdown -->
+       <div class="dropdown relative"><button onclick="toggleDropdown('services')" class="nav-link text-gray-700 font-medium flex items-center space-x-1"> <span>Services</span>
+         <svg width="16" height="16" viewbox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+         </svg></button>
+        <div class="dropdown-menu"><a href="Sevice1.html" class="dropdown-item">Software &amp; Digital Transformation</a> <a href="Service2.html" class="dropdown-item">Hardware &amp; Embedded Systems</a> <a href="Service3.html" class="dropdown-item">Specialized IT Staffing Solutions</a> <a href="Service4.html" class="dropdown-item">Specialized Security &amp; Logistics</a>
+        </div>
+       </div> <a href="Partners.html" class="nav-link text-gray-700 font-medium">Partners</a><a href="index.html" class="nav-link text-gray-700 font-medium">Contact Us</a>
+      </div><!-- Mobile Menu Button --> <button class="lg:hidden p-2" onclick="toggleMobileMenu()" aria-label="Toggle menu">
+       <svg id="menuIcon" width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18" />
+       </svg>
+       <svg id="closeIcon" class="hidden" width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12" />
+       </svg></button>
+     </div>
+     
+     <!-- Mobile Navigation -->
+     <div id="mobileMenu" class="mobile-menu lg:hidden">
+      <div class="py-4 space-y-2"> <a href="index.html" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded">About Us</a> <!-- Mobile Products Dropdown -->
+       <div><button onclick="toggleMobileDropdown('mobileProductsDropdown')" class="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded flex items-center justify-between"> <span>Products</span>
+         <svg width="16" height="16" viewbox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+         </svg></button>
+        <div id="mobileProductsDropdown" class="mobile-dropdown-content bg-gray-50"><a href="Product1.html" class="block px-8 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded">LPG Vending Machines &amp; Cylinder Tracking</a> <a href="Product2.html" class="block px-8 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded">LPG Cylinder Tracking System</a> <a href="Product3.html" class="block px-8 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded">Industrial Gas Tracking &amp; Asset Management</a>
+        </div>
+       </div><!-- Mobile Services Dropdown -->
+       <div><button onclick="toggleMobileDropdown('mobileServicesDropdown')" class="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded flex items-center justify-between"> <span>Services</span>
+         <svg width="16" height="16" viewbox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+         </svg></button>
+        <div id="mobileServicesDropdown" class="mobile-dropdown-content bg-gray-50"><a href="Sevice1.html" class="block px-8 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded">Software &amp; Digital Transformation</a> <a href="Service2.html" class="block px-8 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded">Hardware &amp; Embedded Systems</a> <a href="Service3.html" class="block px-8 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded">Specialized IT Staffing Solutions</a> <a href="Service4.html" class="block px-8 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded">Specialized Security &amp; Logistics</a>
+        </div>
+       </div> <a href="Partners.html" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded">Partners</a><a href="index.html" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded"> Contact Us</a>
+      </div>
+     </div>
+    </div>
+   </nav>
+   <div class="gradient-bg w-full min-h-full"><!-- Hero Section -->
+    <section class="section-padding text-center relative" style="padding-top: 12rem; padding-bottom: 2rem;">
+     <div class="absolute top-10 right-10 w-32 h-32 opacity-20 rotate-slow hidden md:block">
+      <svg viewbox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><circle cx="100" cy="100" r="80" fill="none" stroke="#d4af37" stroke-width="2" /> <circle cx="100" cy="100" r="60" fill="none" stroke="#d4af37" stroke-width="2" /> <circle cx="100" cy="100" r="40" fill="none" stroke="#d4af37" stroke-width="2" /> <circle cx="100" cy="100" r="4" fill="#d4af37" />
+      </svg>
+     </div>
+     <div class="max-w-5xl mx-auto">
+      <h1 id="company-name" class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 glow-text">LIFO Technologies Pvt. Ltd.</h1>
+      <p id="tagline" class="text-xl md:text-2xl lg:text-3xl gold-accent font-semibold mb-8">End-to-End Technology Solutions in Software, Hardware &amp; Embedded Systems</p>
+      <div class="flex justify-center gap-4 mb-12 pulse-dot">
+       <div class="w-3 h-3 bg-blue-400 rounded-full"></div>
+       <div class="w-3 h-3 bg-yellow-400 rounded-full"></div>
+       <div class="w-3 h-3 bg-blue-400 rounded-full"></div>
+      </div>
+     </div>
+    </section><!-- Description Section -->
+    <section class="section-padding fade-in" style="padding-top: 0rem; padding-bottom: 4rem;">
+     <div class="max-w-4xl mx-auto">
+      <p id="description" class="text-base md:text-lg lg:text-xl text-gray-200 leading-relaxed text-center">At LIFO Technologies Pvt. Ltd., we specialize in delivering innovative and customized technology solutions that span software, hardware, and embedded systems. Our expertise extends beyond digital platforms to advanced PCB design, hardware engineering &amp; prototyping, and robust firmware development, enabling us to transform ideas into reliable, market-ready products. We provide complete embedded product life-cycle support—from concept design and component selection to development, testing, validation, and deployment. Whether it's web and mobile applications, cloud platforms, data analytics tools, or complex embedded solutions, LIFO empowers businesses with scalable, future-ready technology that drives efficiency, performance, and long-term growth.</p>
+     </div>
+    </section><!-- Services Grid -->
+    <section class="section-padding">
+     <div class="max-w-6xl mx-auto">
+      <h2 class="text-3xl md:text-4xl font-bold text-center text-white mb-12 glow-text">Our <span class="gold-accent">Expertise</span></h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8"><!-- Software Development Card -->
+       <div class="tech-card hover-lift fade-in">
+        <div class="flex justify-center mb-6 float-animation">
+         <svg width="80" height="80" viewbox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect x="10" y="20" width="80" height="60" rx="4" fill="none" stroke="#3b82f6" stroke-width="2" /> <line x1="10" y1="30" x2="90" y2="30" stroke="#3b82f6" stroke-width="2" /> <circle cx="18" cy="25" r="2" fill="#d4af37" /> <circle cx="26" cy="25" r="2" fill="#d4af37" /> <circle cx="34" cy="25" r="2" fill="#d4af37" /> <line x1="20" y1="45" x2="50" y2="45" stroke="#3b82f6" stroke-width="2" /> <line x1="20" y1="55" x2="70" y2="55" stroke="#3b82f6" stroke-width="2" /> <line x1="20" y1="65" x2="60" y2="65" stroke="#3b82f6" stroke-width="2" />
+         </svg>
+        </div>
+        <h3 class="text-xl font-bold text-white mb-3 text-center">Software Development</h3>
+        <p class="text-gray-300 text-sm text-center">Web &amp; mobile applications, cloud platforms, and data analytics tools</p>
+       </div><!-- Hardware Engineering Card -->
+       <div class="tech-card hover-lift fade-in">
+        <div class="flex justify-center mb-6 float-animation" style="animation-delay: 0.2s;">
+         <svg width="80" height="80" viewbox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect x="15" y="15" width="70" height="70" rx="2" fill="none" stroke="#d4af37" stroke-width="2" /> <circle cx="25" cy="25" r="3" fill="#3b82f6" /> <circle cx="75" cy="25" r="3" fill="#3b82f6" /> <circle cx="25" cy="75" r="3" fill="#3b82f6" /> <circle cx="75" cy="75" r="3" fill="#3b82f6" /> <rect x="40" y="40" width="20" height="20" fill="#d4af37" /> <line x1="25" y1="50" x2="40" y2="50" stroke="#3b82f6" stroke-width="2" /> <line x1="60" y1="50" x2="75" y2="50" stroke="#3b82f6" stroke-width="2" /> <line x1="50" y1="25" x2="50" y2="40" stroke="#3b82f6" stroke-width="2" /> <line x1="50" y1="60" x2="50" y2="75" stroke="#3b82f6" stroke-width="2" />
+         </svg>
+        </div>
+        <h3 class="text-xl font-bold text-white mb-3 text-center">Hardware Engineering</h3>
+        <p class="text-gray-300 text-sm text-center">PCB design, prototyping, and advanced hardware solutions</p>
+       </div><!-- Embedded Systems Card -->
+       <div class="tech-card hover-lift fade-in">
+        <div class="flex justify-center mb-6 float-animation" style="animation-delay: 0.4s;">
+         <svg width="80" height="80" viewbox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect x="20" y="30" width="60" height="40" rx="3" fill="none" stroke="#3b82f6" stroke-width="2" /> <line x1="30" y1="40" x2="70" y2="40" stroke="#d4af37" stroke-width="2" /> <line x1="30" y1="50" x2="70" y2="50" stroke="#d4af37" stroke-width="2" /> <line x1="30" y1="60" x2="70" y2="60" stroke="#d4af37" stroke-width="2" /> <circle cx="85" cy="50" r="8" fill="none" stroke="#d4af37" stroke-width="2" /> <line x1="80" y1="50" x2="15" y2="50" stroke="#3b82f6" stroke-width="2" /> <circle cx="15" cy="50" r="4" fill="#d4af37" />
+         </svg>
+        </div>
+        <h3 class="text-xl font-bold text-white mb-3 text-center">Embedded Systems</h3>
+        <p class="text-gray-300 text-sm text-center">Firmware development and complete product lifecycle support</p>
+       </div>
+      </div>
+     </div>
+    </section><!-- Technical Features -->
+    <section class="section-padding">
+     <div class="max-w-6xl mx-auto">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
+       <div class="fade-in">
+        <h3 class="text-2xl md:text-3xl font-bold text-white mb-6">Complete <span class="gold-accent">Product Lifecycle</span></h3>
+        <div class="space-y-4">
+         <div class="tech-card hover-lift">
+          <div class="flex items-start"><span class="gold-accent text-2xl mr-3">→</span> <span class="text-gray-200 text-sm md:text-base">Concept design and component selection</span>
+          </div>
+         </div>
+         <div class="tech-card hover-lift">
+          <div class="flex items-start"><span class="gold-accent text-2xl mr-3">→</span> <span class="text-gray-200 text-sm md:text-base">Development and prototyping</span>
+          </div>
+         </div>
+         <div class="tech-card hover-lift">
+          <div class="flex items-start"><span class="gold-accent text-2xl mr-3">→</span> <span class="text-gray-200 text-sm md:text-base">Testing and validation</span>
+          </div>
+         </div>
+         <div class="tech-card hover-lift">
+          <div class="flex items-start"><span class="gold-accent text-2xl mr-3">→</span> <span class="text-gray-200 text-sm md:text-base">Deployment and support</span>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div class="flex justify-center fade-in">
+        <svg width="280" height="280" viewbox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" class="float-animation"><defs>
+          <lineargradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+           <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+           <stop offset="100%" style="stop-color:#d4af37;stop-opacity:1" />
+          </lineargradient>
+         </defs> <circle cx="100" cy="100" r="80" fill="none" stroke="url(#grad1)" stroke-width="3" /> <circle cx="100" cy="100" r="60" fill="none" stroke="url(#grad1)" stroke-width="2" /> <circle cx="100" cy="100" r="40" fill="none" stroke="url(#grad1)" stroke-width="2" /> <polygon points="100,40 120,80 160,80 130,105 145,145 100,120 55,145 70,105 40,80 80,80" fill="#d4af37" opacity="0.8" /> <circle cx="100" cy="100" r="15" fill="#3b82f6" />
+        </svg>
+       </div>
+      </div>
+     </div>
+    </section><footer style="background-color: #050d18; padding: 32px 0 20px; border-top: 1px solid rgba(212, 175, 55, 0.2);">
+    <div class="section-container">
+     <div style="text-align: center;"><!-- Social Media Buttons -->
+      <div style="display: flex; justify-content: center; gap: 16px; margin-bottom: 20px; flex-wrap: wrap;"><!-- WhatsApp --> <a href="https://wa.me/971506768820" target="_blank" rel="noopener noreferrer" style="width: 48px; height: 48px; background: rgba(212, 175, 55, 0.1); border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.3s;" onmouseover="this.style.background='rgba(212, 175, 55, 0.2)'; this.style.borderColor='#d4af37'; this.style.transform='translateY(-4px)'" onmouseout="this.style.background='rgba(212, 175, 55, 0.1)'; this.style.borderColor='rgba(212, 175, 55, 0.3)'; this.style.transform='translateY(0)'">
+        <svg width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="#d4af37" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+        </svg></a> <!-- LinkedIn --> <a href="https://www.linkedin.com/company/salahglobal/" target="_blank" rel="noopener noreferrer" style="width: 48px; height: 48px; background: rgba(212, 175, 55, 0.1); border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.3s;" onmouseover="this.style.background='rgba(212, 175, 55, 0.2)'; this.style.borderColor='#d4af37'; this.style.transform='translateY(-4px)'" onmouseout="this.style.background='rgba(212, 175, 55, 0.1)'; this.style.borderColor='rgba(212, 175, 55, 0.3)'; this.style.transform='translateY(0)'">
+        <svg width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="#d4af37" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" /> <rect x="2" y="9" width="4" height="12" /> <circle cx="4" cy="4" r="2" />
+        </svg></a> <!-- YouTube --> <a href="https://www.youtube.com/@alsalahglobal" target="_blank" rel="noopener noreferrer" style="width: 48px; height: 48px; background: rgba(212, 175, 55, 0.1); border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.3s;" onmouseover="this.style.background='rgba(212, 175, 55, 0.2)'; this.style.borderColor='#d4af37'; this.style.transform='translateY(-4px)'" onmouseout="this.style.background='rgba(212, 175, 55, 0.1)'; this.style.borderColor='rgba(212, 175, 55, 0.3)'; this.style.transform='translateY(0)'">
+        <svg width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="#d4af37" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z" /> <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02" fill="#d4af37"></polygon>
+        </svg></a> <!-- Instagram --> <a href="https://www.instagram.com/al_salah_1?igsh=aXl1eWV5Z2IzdHkz" target="_blank" rel="noopener noreferrer" style="width: 48px; height: 48px; background: rgba(212, 175, 55, 0.1); border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.3s;" onmouseover="this.style.background='rgba(212, 175, 55, 0.2)'; this.style.borderColor='#d4af37'; this.style.transform='translateY(-4px)'" onmouseout="this.style.background='rgba(212, 175, 55, 0.1)'; this.style.borderColor='rgba(212, 175, 55, 0.3)'; this.style.transform='translateY(0)'">
+        <svg width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="#d4af37" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5" /> <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" /> <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+        </svg></a> <button class="px-10 py-4 text-lg font-semibold rounded-lg transition-all duration-300 transform hover:scale-105 hover:shadow-2xl" style="background: linear-gradient(135deg, #B8860B 0%, #DAA520 100%); color: #0A1628;"> Media &amp; Downloads </button>
+      </div><!-- Footer Links -->
+      <div style="display: flex; justify-content: center; gap: 20px; margin-bottom: 16px; flex-wrap: wrap;"><a href="#privacy" style="color: rgba(255, 255, 255, 0.6); text-decoration: none; font-size: 13px; transition: color 0.3s;" onmouseover="this.style.color='#d4af37'" onmouseout="this.style.color='rgba(255, 255, 255, 0.6)'">Privacy Policy</a> <span style="color: rgba(255, 255, 255, 0.3);">|</span> <a href="#terms" style="color: rgba(255, 255, 255, 0.6); text-decoration: none; font-size: 13px; transition: color 0.3s;" onmouseover="this.style.color='#d4af37'" onmouseout="this.style.color='rgba(255, 255, 255, 0.6)'">Terms of Service</a> <span style="color: rgba(255, 255, 255, 0.3);">|</span> <a href="#careers" style="color: rgba(255, 255, 255, 0.6); text-decoration: none; font-size: 13px; transition: color 0.3s;" onmouseover="this.style.color='#d4af37'" onmouseout="this.style.color='rgba(255, 255, 255, 0.6)'">Careers</a>
+      </div>
+      <p style="color: rgba(255, 255, 255, 0.4); font-size: 13px;">© 2025 Salah Global. All Rights Reserved.</p>
+     </div>
+    </div>
+   </footer>
+  
+   <!-- WhatsApp Floating Button --> <a id="whatsapp-button" href="https://wa.me/966501234567?text=Hello%20Al%20Salah%20Global,%20I'm%20interested%20in%20your%20security%20solutions" target="_blank" rel="noopener noreferrer" class="whatsapp-float" aria-label="Contact us on WhatsApp">
+    <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+    </svg></a>
+  </div>
+  </div><!-- Back to Top Button -->
+   <div id="back-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+    <svg width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="#0a1628" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline>
+    </svg>
+   </div>
+  <script>
+    const defaultConfig = {
+      background_color: "#0a1628",
+      surface_color: "#1e3a5f",
+      text_color: "#e5e7eb",
+      primary_color: "#3b82f6",
+      accent_color: "#d4af37",
+      font_family: "Inter",
+      font_size: 16,
+      company_name: "LIFO Technologies Pvt. Ltd.",
+      tagline: "End-to-End Technology Solutions in Software, Hardware & Embedded Systems",
+      description: "At LIFO Technologies Pvt. Ltd., we specialize in delivering innovative and customized technology solutions that span software, hardware, and embedded systems. Our expertise extends beyond digital platforms to advanced PCB design, hardware engineering & prototyping, and robust firmware development, enabling us to transform ideas into reliable, market-ready products. We provide complete embedded product life-cycle support—from concept design and component selection to development, testing, validation, and deployment. Whether it's web and mobile applications, cloud platforms, data analytics tools, or complex embedded solutions, LIFO empowers businesses with scalable, future-ready technology that drives efficiency, performance, and long-term growth."
+    };
+    // Navigation functionality
+    let currentDropdown = null;
+
+    function toggleDropdown(dropdownId) {
+      const dropdowns = document.querySelectorAll('.dropdown');
+      let targetDropdown = null;
+      
+      dropdowns.forEach(dropdown => {
+        const button = dropdown.querySelector('button');
+        if (button && button.getAttribute('onclick') && button.getAttribute('onclick').includes(dropdownId)) {
+          targetDropdown = dropdown;
+        }
+      });
+      
+      if (currentDropdown && currentDropdown !== targetDropdown) {
+        currentDropdown.classList.remove('active');
+      }
+      
+      if (targetDropdown) {
+        targetDropdown.classList.toggle('active');
+        currentDropdown = targetDropdown.classList.contains('active') ? targetDropdown : null;
+      }
+    }
+
+    function toggleMobileMenu() {
+      const mobileMenu = document.getElementById('mobileMenu');
+      const menuIcon = document.getElementById('menuIcon');
+      const closeIcon = document.getElementById('closeIcon');
+      
+      mobileMenu.classList.toggle('active');
+      menuIcon.classList.toggle('hidden');
+      closeIcon.classList.toggle('hidden');
+    }
+
+    function toggleMobileDropdown(dropdownId) {
+      const dropdown = document.getElementById(dropdownId);
+      if (dropdown) {
+        dropdown.classList.toggle('active');
+      }
+    }
+
+    // Close dropdowns when clicking outside
+    document.addEventListener('click', function(event) {
+      if (!event.target.closest('.dropdown')) {
+        const dropdowns = document.querySelectorAll('.dropdown');
+        dropdowns.forEach(d => d.classList.remove('active'));
+        currentDropdown = null;
+      }
+    });
+
+    async function onConfigChange(config) {
+      const baseFontStack = '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+      const customFont = config.font_family || defaultConfig.font_family;
+      const baseSize = config.font_size || defaultConfig.font_size;
+      
+      document.body.style.fontFamily = `${customFont}, ${baseFontStack}`;
+      document.body.style.fontSize = `${baseSize}px`;
+
+      const backgroundColor = config.background_color || defaultConfig.background_color;
+      const surfaceColor = config.surface_color || defaultConfig.surface_color;
+      const textColor = config.text_color || defaultConfig.text_color;
+      const primaryColor = config.primary_color || defaultConfig.primary_color;
+      const accentColor = config.accent_color || defaultConfig.accent_color;
+
+      const gradientBg = document.querySelector('.gradient-bg');
+      gradientBg.style.background = `linear-gradient(135deg, ${backgroundColor} 0%, ${surfaceColor} 50%, ${backgroundColor} 100%)`;
+
+      const allText = document.querySelectorAll('p, li, span');
+      allText.forEach(el => {
+        if (!el.classList.contains('gold-accent')) {
+          el.style.color = textColor;
+        }
+      });
+
+      const goldElements = document.querySelectorAll('.gold-accent');
+      goldElements.forEach(el => {
+        el.style.color = accentColor;
+      });
+
+      const techCards = document.querySelectorAll('.tech-card');
+      techCards.forEach(card => {
+        card.style.background = `rgba(30, 58, 95, 0.5)`;
+        card.style.borderColor = `${accentColor}33`;
+      });
+
+      const svgStrokes = document.querySelectorAll('svg line, svg circle[stroke], svg rect[stroke]');
+      svgStrokes.forEach((el, index) => {
+        if (index % 2 === 0) {
+          el.setAttribute('stroke', primaryColor);
+        } else {
+          el.setAttribute('stroke', accentColor);
+        }
+      });
+
+      const svgFills = document.querySelectorAll('svg circle[fill]:not([fill="none"]), svg rect[fill]:not([fill="none"]), svg polygon[fill]');
+      svgFills.forEach((el, index) => {
+        if (index % 2 === 0) {
+          el.setAttribute('fill', accentColor);
+        } else {
+          el.setAttribute('fill', primaryColor);
+        }
+      });
+
+      document.getElementById('company-name').textContent = config.company_name || defaultConfig.company_name;
+      document.getElementById('tagline').textContent = config.tagline || defaultConfig.tagline;
+      document.getElementById('description').textContent = config.description || defaultConfig.description;
+    }
+
+    function mapToCapabilities(config) {
+      return {
+        recolorables: [
+          {
+            get: () => config.background_color || defaultConfig.background_color,
+            set: (value) => {
+              config.background_color = value;
+              window.elementSdk.setConfig({ background_color: value });
+            }
+          },
+          {
+            get: () => config.surface_color || defaultConfig.surface_color,
+            set: (value) => {
+              config.surface_color = value;
+              window.elementSdk.setConfig({ surface_color: value });
+            }
+          },
+          {
+            get: () => config.text_color || defaultConfig.text_color,
+            set: (value) => {
+              config.text_color = value;
+              window.elementSdk.setConfig({ text_color: value });
+            }
+          },
+          {
+            get: () => config.primary_color || defaultConfig.primary_color,
+            set: (value) => {
+              config.primary_color = value;
+              window.elementSdk.setConfig({ primary_color: value });
+            }
+          },
+          {
+            get: () => config.accent_color || defaultConfig.accent_color,
+            set: (value) => {
+              config.accent_color = value;
+              window.elementSdk.setConfig({ accent_color: value });
+            }
+          }
+        ],
+        borderables: [],
+        fontEditable: {
+          get: () => config.font_family || defaultConfig.font_family,
+          set: (value) => {
+            config.font_family = value;
+            window.elementSdk.setConfig({ font_family: value });
+          }
+        },
+        fontSizeable: {
+          get: () => config.font_size || defaultConfig.font_size,
+          set: (value) => {
+            config.font_size = value;
+            window.elementSdk.setConfig({ font_size: value });
+          }
+        }
+      };
+    }
+
+    function mapToEditPanelValues(config) {
+      return new Map([
+        ["company_name", config.company_name || defaultConfig.company_name],
+        ["tagline", config.tagline || defaultConfig.tagline],
+        ["description", config.description || defaultConfig.description]
+      ]);
+    }
+
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange,
+        mapToCapabilities,
+        mapToEditPanelValues
+      });
+    }
+
+    // Scroll animations
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, observerOptions);
+
+    document.querySelectorAll('.fade-in').forEach(el => {
+      observer.observe(el);
+    });
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9b74ab31c6dcc195',t:'MTc2NzI5ODMxNy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
